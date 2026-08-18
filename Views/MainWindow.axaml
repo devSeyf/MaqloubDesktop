@@ -1,0 +1,108 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Maqloub.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Maqloub.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Maqloub">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+ <StackPanel
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    Spacing="16">
+
+    <TextBlock
+        Text="مقلوب"
+        FontSize="34"
+        FontWeight="Bold"
+        HorizontalAlignment="Center" />
+
+    <TextBlock
+        Text="اقلبها، لا تمسحها"
+        FontSize="18"
+        HorizontalAlignment="Center" />
+
+
+    <TextBlock
+    Text="اختر اللغة الأولى"
+    FontSize="16"
+    HorizontalAlignment="Center"
+    Margin="0,20,0,0" />
+
+<ComboBox
+    x:Name="FirstLanguageComboBox"
+    Width="260"
+    PlaceholderText="اختر اللغة الأولى">
+
+    <ComboBoxItem Content="العربية" />
+    <ComboBoxItem Content="English" />
+
+
+
+
+</ComboBox>
+
+     <TextBlock
+    Text="اختر اللغة الثانية"
+    FontSize="16"
+    HorizontalAlignment="Center"
+
+    Margin="0,10,0,0" />
+
+<ComboBox
+    x:Name="SecondLanguageComboBox"
+    Width="260"
+    PlaceholderText="اختر اللغة الثانية">
+
+    <ComboBoxItem Content="العربية" />
+    <ComboBoxItem Content="English" />
+
+</ComboBox>
+
+
+
+  <TextBlock
+    Text="اختر اختصار قلب النص"
+    FontSize="16"
+    HorizontalAlignment="Center"
+    Margin="0,10,0,0" />
+
+    <TextBox
+    x:Name="ShortcutTextBox"
+    Width="260"
+    IsReadOnly="True"
+    Watermark="اضغط هنا ثم اختر الاختصار"
+    HorizontalContentAlignment="Center"
+    KeyDown="ShortcutTextBox_KeyDown" />
+
+
+
+      <Button
+    x:Name="StartButton"
+    Content="ابدأ"
+    Width="250"
+    Height="45"
+    HorizontalAlignment="Center"
+    HorizontalContentAlignment="Center"
+    VerticalContentAlignment="Center"
+    Margin="0,20,0,0" 
+    Click="StartButton_Click"
+    />
+
+
+
+
+</StackPanel>
+
+
+
+</Window>
