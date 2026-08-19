@@ -10,6 +10,10 @@ public sealed class WindowsKeyboardService
     private const ushort VkControl = 0x11;
     private const ushort VkC = 0x43;
     private const uint KeyEventKeyUp = 0x0002;
+ 
+    private const ushort VkV = 0x56;  // This prevent Virtualkey for "V" 
+
+
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern uint SendInput(
@@ -40,9 +44,7 @@ public sealed class WindowsKeyboardService
         return sentCount == (uint)inputs.Length;
     }
 
-    private static Input CreateKeyboardInput(
-        ushort virtualKey,
-        uint flags)
+    private static Input CreateKeyboardInput( ushort virtualKey,uint flags)
     {
         return new Input
         {
@@ -106,4 +108,33 @@ public sealed class WindowsKeyboardService
         public ushort ParameterLow;
         public ushort ParameterHigh;
     }
+
+
+
+
+    // Method to send the Ctrl+V paste shortcut
+    public bool SendPasteShortcut()
+    {
+        if (!OperatingSystem.IsWindows())
+            return false;
+
+        var inputs = new[]
+        {
+        CreateKeyboardInput(VkControl, 0),
+        CreateKeyboardInput(VkV, 0),
+        CreateKeyboardInput(VkV, KeyEventKeyUp),
+        CreateKeyboardInput(VkControl, KeyEventKeyUp)
+    };
+
+        var sentCount = SendInput(
+            (uint)inputs.Length,
+            inputs,
+            Marshal.SizeOf<Input>());
+
+        Debug.WriteLine($"Paste input events sent: {sentCount}");
+
+        return sentCount == (uint)inputs.Length;
+    }
+
+
 }

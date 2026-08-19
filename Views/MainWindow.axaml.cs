@@ -15,6 +15,11 @@ public partial class MainWindow : Window
     private KeyModifiers _selectedShortcutModifiers;
     private readonly WindowsGlobalHotkeyService _globalHotkeyService = new();
     private readonly WindowsKeyboardService _keyboardService = new();
+
+    private string _firstLanguage = string.Empty;
+    private string _secondLanguage = string.Empty;
+
+    private readonly KeyboardLayoutConverter _layoutConverter = new();
     public MainWindow()
     {
         InitializeComponent();
@@ -26,25 +31,35 @@ public partial class MainWindow : Window
     private async void GlobalHotkeyService_HotkeyPressed()
     {
         await Task.Delay(200);
-
         var copySent = _keyboardService.SendCopyShortcut();
-
-        Debug.WriteLine($"Copy shortcut sent: {copySent}");
 
         if (!copySent)
             return;
-
         await Task.Delay(200);
-
         var selectedText = await Clipboard.TryGetTextAsync();
+        var convertedText = _layoutConverter.Convert(selectedText, _firstLanguage,_secondLanguage);
+        Debug.WriteLine($"Original text: {selectedText}");
+        Debug.WriteLine($"Converted text: {convertedText}");
 
+        // Place the converted text in the clipboard
+        await Clipboard.SetTextAsync(convertedText);
+        Debug.WriteLine($"Converted text placed in clipboard: {convertedText}");
+        await Task.Delay(150);
+        var pasteSent = _keyboardService.SendPasteShortcut();
+        Debug.WriteLine($"Paste shortcut sent: {pasteSent}");
+
+ 
         if (string.IsNullOrWhiteSpace(selectedText))
         {
             Debug.WriteLine("No selected text was copied.");
             return;
         }
+        
 
-        Debug.WriteLine($"Copied text: {selectedText}");
+
+
+        
+
     }
     private void StartButton_Click(object? sender, RoutedEventArgs e)
     {
@@ -61,11 +76,22 @@ public partial class MainWindow : Window
             return;
         }
 
+
+        // The languages must be different
         if (firstLanguage == secondLanguage)
         {
             Debug.WriteLine("Languages must be different.");
             return;
         }
+
+        _firstLanguage = firstLanguage;
+        _secondLanguage = secondLanguage;
+
+        Debug.WriteLine(
+            $"Saved languages: {_firstLanguage} <-> {_secondLanguage}");
+
+
+
 
         if (_selectedShortcutKey is null ||
     _selectedShortcutModifiers == KeyModifiers.None)
