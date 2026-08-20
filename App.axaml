@@ -1,4 +1,6 @@
-﻿<Application xmlns="https://github.com/avaloniaui"
+﻿
+
+<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Maqloub.App"
              xmlns:local="using:Maqloub"
@@ -12,4 +14,44 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+
+
+
+
+
+
+
+
+
+    <TrayIcon.Icons>
+    <TrayIcons>
+        <TrayIcon
+            Icon="/Assets/kitchen-pack.png"
+            ToolTipText="مقلوب"
+            Clicked="OpenWindow_OnClick">
+
+            <TrayIcon.Menu>
+                <NativeMenu>
+                    <NativeMenuItem
+                        Header="فتح مقلوب"
+                        Click="OpenWindow_OnClick" />
+
+                    <NativeMenuItem
+                        Header="خروج نهائي"
+                        Click="ExitApplication_OnClick" />
+
+
+                </NativeMenu>
+
+
+
+
+            </TrayIcon.Menu>
+
+        </TrayIcon>
+    </TrayIcons>
+</TrayIcon.Icons>
+
+
 </Application>

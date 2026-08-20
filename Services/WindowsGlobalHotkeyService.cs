@@ -13,6 +13,20 @@ public sealed class WindowsGlobalHotkeyService
     private const int HotkeyId = 1;
     private const uint ModNoRepeat = 0x4000;
 
+
+    // This field is used to store the window handle for the hotkey registration.
+    private IntPtr _windowHandle;
+    private bool _isRegistered;
+
+
+    // This method unregisters the global hotkey if it is registered.
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool UnregisterHotKey(
+    IntPtr windowHandle,
+    int hotkeyId);
+
+
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool RegisterHotKey(
@@ -21,20 +35,18 @@ public sealed class WindowsGlobalHotkeyService
         uint modifiers,
         uint virtualKey);
 
-    public bool Register(
-    IntPtr windowHandle,
-    Key key,
-    KeyModifiers modifiers)
+    public bool Register(IntPtr windowHandle,Key key, KeyModifiers modifiers)
     {
-        if (!OperatingSystem.IsWindows() ||
-            windowHandle == IntPtr.Zero)
+        if (!OperatingSystem.IsWindows() ||windowHandle == IntPtr.Zero)
         {
             Debug.WriteLine("Windows window handle is not available.");
             return false;
         }
 
-        var windowsModifiers =
-            ConvertModifiers(modifiers) | ModNoRepeat;
+        Unregister();
+
+        var windowsModifiers =ConvertModifiers(modifiers) | ModNoRepeat;
+            
 
         var virtualKey = ConvertKey(key);
 
@@ -65,6 +77,10 @@ public sealed class WindowsGlobalHotkeyService
 
         Debug.WriteLine(
             $"Global hotkey registered: {modifiers} + {key}");
+
+
+        _windowHandle = windowHandle;
+        _isRegistered = true;
 
         return true;
     }
@@ -197,11 +213,7 @@ public sealed class WindowsGlobalHotkeyService
         return true;
     }
 
-    private IntPtr WindowMessageHandler(
-        IntPtr windowHandle,
-        uint message,
-        IntPtr wParam,
-        IntPtr lParam)
+    private IntPtr WindowMessageHandler(IntPtr windowHandle,uint message, IntPtr wParam,IntPtr lParam) 
     {
         if (message == WmHotkey &&
             wParam.ToInt32() == HotkeyId)
@@ -220,4 +232,45 @@ public sealed class WindowsGlobalHotkeyService
             wParam,
             lParam);
     }
+
+
+
+
+
+
+    // This method unregisters the global hotkey and removes the message hook.
+    public void Unregister()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        if (_isRegistered && _windowHandle != IntPtr.Zero)
+        {
+            var isRemoved = UnregisterHotKey(
+                _windowHandle,
+                HotkeyId);
+
+            Debug.WriteLine(
+                $"Global hotkey removed: {isRemoved}");
+
+            _isRegistered = false;
+        }
+
+        if (_previousWindowProcedure != IntPtr.Zero &&
+            _windowHandle != IntPtr.Zero)
+        {
+            SetWindowLongPtr(
+                _windowHandle,
+                GwlWndProc,
+                _previousWindowProcedure);
+
+            _previousWindowProcedure = IntPtr.Zero;
+            _windowProcedure = null;
+
+            Debug.WriteLine("Windows message hook removed.");
+        }
+
+        _windowHandle = IntPtr.Zero;
+    }
+
 }

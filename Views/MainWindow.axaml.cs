@@ -20,14 +20,19 @@ public partial class MainWindow : Window
     private string _secondLanguage = string.Empty;
 
     private readonly KeyboardLayoutConverter _layoutConverter = new();
+
+    // This field is used to control whether the window can be closed.
+    private bool _allowClose;
     public MainWindow()
     {
         InitializeComponent();
-        _globalHotkeyService.HotkeyPressed +=
-      GlobalHotkeyService_HotkeyPressed;
+        _globalHotkeyService.HotkeyPressed +=GlobalHotkeyService_HotkeyPressed;
+      
+
+        Closing += MainWindow_Closing;
     }
 
-
+    // This method is called when the global hotkey is pressed. It performs the following steps:
     private async void GlobalHotkeyService_HotkeyPressed()
     {
         await Task.Delay(200);
@@ -126,7 +131,7 @@ public partial class MainWindow : Window
             $"Global hotkey registered successfully: {isRegistered}");
 
     }
-
+    // This event handler is triggered when the user presses a key in the ShortcutTextBox.
     private void ShortcutTextBox_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key is Key.LeftCtrl or Key.RightCtrl
@@ -160,6 +165,27 @@ public partial class MainWindow : Window
      
     }
 
+
+    // This event handler is triggered when the user attempts to close the window.
+    private void MainWindow_Closing(object? sender,WindowClosingEventArgs e)
+    {
+        if (_allowClose)
+            return;
+
+        e.Cancel = true;
+        Hide();
+
+        Debug.WriteLine(
+            "Maqloub window hidden. Application still running.");
+    }
+
+    public void PrepareForShutdown()
+    {
+        _allowClose = true;
+        _globalHotkeyService.Unregister();
+
+        Debug.WriteLine("Maqloub is ready to shut down.");
+    }
 
 
 }
