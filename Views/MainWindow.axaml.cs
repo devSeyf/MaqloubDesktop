@@ -5,9 +5,11 @@ using System.Diagnostics;
 namespace Maqloub.Views;
 
 using Avalonia.Input.Platform;
-using System.Threading.Tasks;
+using Maqloub.Models;
 using Maqloub.Services;
 using System;
+using System.Security.AccessControl;
+using System.Threading.Tasks;
 
 public partial class MainWindow : Window
 {
@@ -23,9 +25,17 @@ public partial class MainWindow : Window
 
     // This field is used to control whether the window can be closed.
     private bool _allowClose;
+
+    // This service is used to manage application settings, such as the selected languages and shortcut.
+    private readonly SettingsService _settingsService = new();
+
+    // This field holds the saved settings loaded from the settings service.
+    private AppSettings? _savedSettings;
+
     public MainWindow()
     {
         InitializeComponent();
+        LoadSettings();
         _globalHotkeyService.HotkeyPressed +=GlobalHotkeyService_HotkeyPressed;
       
 
@@ -66,10 +76,10 @@ public partial class MainWindow : Window
         
 
     }
-    private void StartButton_Click(object? sender, RoutedEventArgs e)
+    private async void StartButton_Click(object? sender, RoutedEventArgs e)
     {
-        var firstLanguage =
-       (FirstLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+        var firstLanguage =(FirstLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+       
 
         var secondLanguage =
             (SecondLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
@@ -130,6 +140,18 @@ public partial class MainWindow : Window
         Debug.WriteLine(
             $"Global hotkey registered successfully: {isRegistered}");
 
+        var settings = new AppSettings
+        {
+            FirstLanguage = _firstLanguage,
+            SecondLanguage = _secondLanguage,
+            ShortcutKey = _selectedShortcutKey.Value.ToString(),
+            ShortcutModifiers = _selectedShortcutModifiers.ToString()
+        };
+
+        await _settingsService.SaveAsync(settings);
+
+        Debug.WriteLine("Settings saved successfully.");
+
     }
     // This event handler is triggered when the user presses a key in the ShortcutTextBox.
     private void ShortcutTextBox_KeyDown(object? sender, KeyEventArgs e)
@@ -186,6 +208,56 @@ public partial class MainWindow : Window
 
         Debug.WriteLine("Maqloub is ready to shut down.");
     }
+
+
+
+
+    //Loads saved application settings from the settings file
+    private async void LoadSettings()
+    {
+        _savedSettings = await _settingsService.LoadAsync();
+
+        if (_savedSettings is not null)
+        {
+            Debug.WriteLine($"Loaded: {_savedSettings.FirstLanguage} -> {_savedSettings.SecondLanguage}");
+            ApplySavedSettings();
+        }
+        else
+        {
+            Debug.WriteLine("No saved settings found.");
+        }
+
+    }
+
+
+
+
+
+    private void ApplySavedSettings()
+    {
+        if (_savedSettings is null)
+            return;
+
+        _firstLanguage = _savedSettings.FirstLanguage;
+        _secondLanguage = _savedSettings.SecondLanguage;
+
+        if (Enum.TryParse<Key>(
+                _savedSettings.ShortcutKey,
+                out var key))
+        {
+            _selectedShortcutKey = key;
+        }
+
+        if (Enum.TryParse<KeyModifiers>(
+                _savedSettings.ShortcutModifiers,
+                out var modifiers))
+        {
+            _selectedShortcutModifiers = modifiers;
+        }
+
+        Debug.WriteLine("Saved settings applied.");
+    }
+
 
 
 }
