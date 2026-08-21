@@ -9,4 +9,7 @@ public sealed class AppSettings
     public string ShortcutKey { get; set; } = string.Empty;
 
     public string ShortcutModifiers { get; set; } = string.Empty;
+
+
+    public bool StartWithWindows { get; set; }
 }

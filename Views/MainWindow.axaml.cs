@@ -221,6 +221,8 @@ public partial class MainWindow : Window
         {
             Debug.WriteLine($"Loaded: {_savedSettings.FirstLanguage} -> {_savedSettings.SecondLanguage}");
             ApplySavedSettings();
+            RegisterSavedHotkey();
+            StartInBackgroundIfConfigured();
         }
         else
         {
@@ -232,7 +234,7 @@ public partial class MainWindow : Window
 
 
 
-
+    // This method applies the saved settings to the application, including the selected languages and shortcut key/modifiers.
     private void ApplySavedSettings()
     {
         if (_savedSettings is null)
@@ -258,6 +260,52 @@ public partial class MainWindow : Window
         Debug.WriteLine("Saved settings applied.");
     }
 
+
+
+
+
+    private void RegisterSavedHotkey()
+    {
+        if (_selectedShortcutKey is null ||
+            _selectedShortcutModifiers == KeyModifiers.None)
+        {
+            Debug.WriteLine("No saved shortcut available.");
+            return;
+        }
+
+
+        
+        var platformHandle = TryGetPlatformHandle();
+
+        if (platformHandle is null)
+        {
+            Debug.WriteLine("Window handle not available.");
+            return;
+        }
+
+        var registered = _globalHotkeyService.Register(
+            platformHandle.Handle,
+            _selectedShortcutKey.Value,
+            _selectedShortcutModifiers);
+
+        Debug.WriteLine(
+            $"Saved hotkey registered: {registered}");
+    }
+
+
+
+
+    
+    private void StartInBackgroundIfConfigured()
+    {
+        if (_savedSettings is null)
+            return;
+
+        Hide();
+
+        Debug.WriteLine(
+            "Maqloub started in background.");
+    }
 
 
 }
