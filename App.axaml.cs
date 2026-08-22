@@ -7,7 +7,8 @@ using Avalonia.Threading;
 using Maqloub.ViewModels;
 using Maqloub.Views;
 using System;
- 
+using System.Diagnostics;
+
 namespace Maqloub;
 
 public partial class App : Application
@@ -71,5 +72,24 @@ public partial class App : Application
         }
 
         desktop.Shutdown();
+    }
+
+
+
+    private void OpenSettings_OnClick(
+    object? sender,
+    EventArgs e)
+    {
+        if (ApplicationLifetime
+            is IClassicDesktopStyleApplicationLifetime desktop &&
+            desktop.MainWindow is MainWindow mainWindow)
+        {
+            mainWindow.Show();
+            mainWindow.Activate();
+
+            Debug.WriteLine("Settings window opened.");
+            
+
+        }
     }
 }

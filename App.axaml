@@ -15,15 +15,7 @@
         <FluentTheme />
     </Application.Styles>
 
-
-
-
-
-
-
-
-
-
+ 
     <TrayIcon.Icons>
     <TrayIcons>
         <TrayIcon
@@ -34,19 +26,21 @@
             <TrayIcon.Menu>
                 <NativeMenu>
                     <NativeMenuItem
-                        Header="فتح مقلوب"
+                        Header="Open Maqloub "
                         Click="OpenWindow_OnClick" />
 
                     <NativeMenuItem
-                        Header="خروج نهائي"
+                        Header="Final exit"
                         Click="ExitApplication_OnClick" />
+
+                    <NativeMenuItem
+                    Header="Settings"
+                    Click="OpenSettings_OnClick" />
 
 
                 </NativeMenu>
 
-
-
-
+ 
             </TrayIcon.Menu>
 
         </TrayIcon>

@@ -32,6 +32,9 @@ public partial class MainWindow : Window
     // This field holds the saved settings loaded from the settings service.
     private AppSettings? _savedSettings;
 
+    // This service is used to manage clipboard operations, such as saving and restoring text.
+    private readonly ClipboardService _clipboardService = new();
+
     public MainWindow()
     {
         InitializeComponent();
@@ -46,12 +49,25 @@ public partial class MainWindow : Window
     private async void GlobalHotkeyService_HotkeyPressed()
     {
         await Task.Delay(200);
+
+        var clipboard = Clipboard;
+
+        await _clipboardService.SaveAsync(clipboard);
+
         var copySent = _keyboardService.SendCopyShortcut();
 
         if (!copySent)
             return;
         await Task.Delay(200);
         var selectedText = await Clipboard.TryGetTextAsync();
+
+
+        if (string.IsNullOrWhiteSpace(selectedText))
+        {
+            Debug.WriteLine("No selected text was copied.");
+            return;
+        }
+
         var convertedText = _layoutConverter.Convert(selectedText, _firstLanguage,_secondLanguage);
         Debug.WriteLine($"Original text: {selectedText}");
         Debug.WriteLine($"Converted text: {convertedText}");
@@ -63,17 +79,11 @@ public partial class MainWindow : Window
         var pasteSent = _keyboardService.SendPasteShortcut();
         Debug.WriteLine($"Paste shortcut sent: {pasteSent}");
 
- 
-        if (string.IsNullOrWhiteSpace(selectedText))
-        {
-            Debug.WriteLine("No selected text was copied.");
-            return;
-        }
-        
+        await Task.Delay(300);
 
+        await _clipboardService.RestoreAsync(clipboard);
 
-
-        
+        Debug.WriteLine("Clipboard restored.");
 
     }
     private async void StartButton_Click(object? sender, RoutedEventArgs e)
@@ -132,10 +142,7 @@ public partial class MainWindow : Window
         Debug.WriteLine(
             $"Native handle type: {platformHandle.HandleDescriptor}");
 
-        var isRegistered = _globalHotkeyService.Register(
-            platformHandle.Handle,
-            _selectedShortcutKey.Value,
-            _selectedShortcutModifiers);
+        var isRegistered = RegisterCurrentShortcut();
 
         Debug.WriteLine(
             $"Global hotkey registered successfully: {isRegistered}");
@@ -263,7 +270,7 @@ public partial class MainWindow : Window
 
 
 
-
+    //  this method registers the saved hotkey with the global hotkey service, allowing the application to respond to the specified key combination.
     private void RegisterSavedHotkey()
     {
         if (_selectedShortcutKey is null ||
@@ -295,11 +302,16 @@ public partial class MainWindow : Window
 
 
 
-    
+    // This method checks if the application is configured to start in the background and hides the main window if so.
     private void StartInBackgroundIfConfigured()
     {
-        if (_savedSettings is null)
+        if (!HasValidSettings())
+        {
+            Debug.WriteLine(
+                "Settings are incomplete.");
+
             return;
+        }
 
         Hide();
 
@@ -307,5 +319,42 @@ public partial class MainWindow : Window
             "Maqloub started in background.");
     }
 
+
+    // This method checks if the saved settings are valid,
+    // ensuring that all required fields (first language, second language, shortcut key, and shortcut modifiers) are not null or empty.
+    private bool HasValidSettings()
+    {
+        return _savedSettings is not null &&
+          !string.IsNullOrWhiteSpace(
+              _savedSettings.FirstLanguage) &&
+          !string.IsNullOrWhiteSpace(
+              _savedSettings.SecondLanguage) &&
+          !string.IsNullOrWhiteSpace(
+              _savedSettings.ShortcutKey) &&
+          !string.IsNullOrWhiteSpace(
+              _savedSettings.ShortcutModifiers);
+    }
+
+
+  
+    // This 
+    private bool RegisterCurrentShortcut()
+    {
+        var platformHandle = TryGetPlatformHandle();
+
+        if (platformHandle is null ||
+            platformHandle.Handle == IntPtr.Zero)
+        {
+            Debug.WriteLine("Window handle unavailable.");
+            return false;
+        }
+
+        _globalHotkeyService.Unregister();
+
+        return _globalHotkeyService.Register(
+            platformHandle.Handle,
+            _selectedShortcutKey!.Value,
+            _selectedShortcutModifiers);
+    }
 
 }

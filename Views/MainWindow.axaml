@@ -3,106 +3,137 @@
         xmlns:vm="using:Maqloub.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
+        Width="420"
+        Height="600"
+        Background="#121212"
         x:Class="Maqloub.Views.MainWindow"
         x:DataType="vm:MainViewModel"
-        Icon="/Assets/avalonia-logo.ico"
         Title="Maqloub">
 
+
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
+        <vm:MainViewModel/>
     </Design.DataContext>
 
- <StackPanel
-    HorizontalAlignment="Center"
-    VerticalAlignment="Center"
-    Spacing="16">
 
-    <TextBlock
-        Text="مقلوب"
-        FontSize="34"
-        FontWeight="Bold"
-        HorizontalAlignment="Center" />
-
-    <TextBlock
-        Text="اقلبها، لا تمسحها"
-        FontSize="18"
-        HorizontalAlignment="Center" />
+    <Border
+        Background="#1E1E1E"
+        CornerRadius="24"
+        Padding="35"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
 
 
-    <TextBlock
-    Text="اختر اللغة الأولى"
-    FontSize="16"
-    HorizontalAlignment="Center"
-    Margin="0,20,0,0" />
+        <StackPanel Width="300" Spacing="18">
 
-<ComboBox
-    x:Name="FirstLanguageComboBox"
-    Width="260"
-    PlaceholderText="اختر اللغة الأولى">
 
-    <ComboBoxItem Content="العربية" />
-    <ComboBoxItem Content="English" />
+            <TextBlock
+                Text="Maqloub"
+                FontSize="36"
+                FontWeight="Bold"
+                Foreground="White"
+                HorizontalAlignment="Center"/>
+
+
+            <TextBlock
+                Text="Flip wrong keyboard typing instantly"
+                FontSize="15"
+                Foreground="#BBBBBB"
+                HorizontalAlignment="Center"
+                TextAlignment="Center"/>
 
 
 
-
-</ComboBox>
-
-     <TextBlock
-    Text="اختر اللغة الثانية"
-    FontSize="16"
-    HorizontalAlignment="Center"
-
-    Margin="0,10,0,0" />
-
-<ComboBox
-    x:Name="SecondLanguageComboBox"
-    Width="260"
-    PlaceholderText="اختر اللغة الثانية">
-
-    <ComboBoxItem Content="العربية" />
-    <ComboBoxItem Content="English" />
-
-</ComboBox>
+            <TextBlock
+                Text="Select first layout"
+                FontSize="15"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                Margin="0,20,0,0"/>
 
 
+            <ComboBox
+                x:Name="FirstLanguageComboBox"
+                Width="260"
+                Height="40"
+                Background="#252525"
+                Foreground="White"
+                FontSize="14">
 
-  <TextBlock
-    Text="اختر اختصار قلب النص"
-    FontSize="16"
-    HorizontalAlignment="Center"
-    Margin="0,10,0,0" />
+                <ComboBoxItem Content="Arabic"/>
+                <ComboBoxItem Content="English"/>
 
-    <TextBox
-    x:Name="ShortcutTextBox"
-    Width="260"
-    IsReadOnly="True"
-    Watermark="اضغط هنا ثم اختر الاختصار"
-    HorizontalContentAlignment="Center"
-    KeyDown="ShortcutTextBox_KeyDown" />
+            </ComboBox>
 
 
 
-      <Button
-    x:Name="StartButton"
-    Content="ابدأ"
-    Width="250"
-    Height="45"
-    HorizontalAlignment="Center"
-    HorizontalContentAlignment="Center"
-    VerticalContentAlignment="Center"
-    Margin="0,20,0,0" 
-    Click="StartButton_Click"
-    />
+            <TextBlock
+                Text="Select second layout"
+                FontSize="15"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                Margin="0,10,0,0"/>
+
+
+            <ComboBox
+                x:Name="SecondLanguageComboBox"
+                Width="260"
+                Height="40"
+                Background="#252525"
+                Foreground="White"
+                FontSize="14">
+
+                <ComboBoxItem Content="Arabic"/>
+                <ComboBoxItem Content="English"/>
+
+            </ComboBox>
 
 
 
+            <TextBlock
+                Text="Choose text flip shortcut"
+                FontSize="15"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                Margin="0,10,0,0"/>
 
-</StackPanel>
 
+
+            <TextBox
+                x:Name="ShortcutTextBox"
+                Width="260"
+                Height="40"
+                Background="#252525"
+                Foreground="White"
+                FontSize="14"
+                IsReadOnly="True"
+                PlaceholderText="Press keys to set shortcut"
+                HorizontalContentAlignment="Center"
+                KeyDown="ShortcutTextBox_KeyDown"/>
+
+
+
+            <Button
+                x:Name="StartButton"
+                Content="Start"
+                Width="260"
+                Height="45"
+                Background="#6C63FF"
+                Foreground="White"
+                FontSize="16"
+                FontWeight="Bold"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Margin="0,25,0,0"
+                Click="StartButton_Click"/>
+
+
+        </StackPanel>
+
+
+    </Border>
 
 
 </Window>
