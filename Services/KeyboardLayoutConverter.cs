@@ -79,18 +79,22 @@ public sealed class KeyboardLayoutConverter
         ['ظ'] = '/'
     };
 
-    public string Convert(  string text,  string firstLanguage,string secondLanguage)
-     {
-        var isArabicEnglishPair =firstLanguage == "العربية" &&secondLanguage == "English" || firstLanguage == "English" &&secondLanguage == "العربية";
-        
+    public string Convert(string text, string firstLanguage, string secondLanguage)
+    {
+        var isArabicEnglishPair =
+    IsArabicLayout(firstLanguage) &&
+    secondLanguage == "English" ||
+    firstLanguage == "English" &&
+    IsArabicLayout(secondLanguage);
+
         if (!isArabicEnglishPair)
             return text;
 
         return ContainsArabic(text)
             ? ConvertArabicToEnglish(text)
             : ConvertEnglishToArabic(text);
-    } 
-     
+    }
+
     private static bool ContainsArabic(string text)
     {
         foreach (var character in text)
@@ -156,5 +160,12 @@ public sealed class KeyboardLayoutConverter
         }
 
         return result.ToString();
+    }
+
+
+
+    private static bool IsArabicLayout(string layout)
+    {
+        return layout is "Arabic" or "العربية";
     }
 }

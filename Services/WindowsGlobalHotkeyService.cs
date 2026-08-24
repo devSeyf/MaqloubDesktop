@@ -14,6 +14,8 @@ public sealed class WindowsGlobalHotkeyService
     private const uint ModNoRepeat = 0x4000;
 
 
+
+
     // This field is used to store the window handle for the hotkey registration.
     private IntPtr _windowHandle;
     private bool _isRegistered;
@@ -35,9 +37,9 @@ public sealed class WindowsGlobalHotkeyService
         uint modifiers,
         uint virtualKey);
 
-    public bool Register(IntPtr windowHandle,Key key, KeyModifiers modifiers)
+    public bool Register(IntPtr windowHandle, Key key, KeyModifiers modifiers)
     {
-        if (!OperatingSystem.IsWindows() ||windowHandle == IntPtr.Zero)
+        if (!OperatingSystem.IsWindows() || windowHandle == IntPtr.Zero)
         {
             Debug.WriteLine("Windows window handle is not available.");
             return false;
@@ -45,8 +47,8 @@ public sealed class WindowsGlobalHotkeyService
 
         Unregister();
 
-        var windowsModifiers =ConvertModifiers(modifiers) | ModNoRepeat;
-            
+        var windowsModifiers = ConvertModifiers(modifiers) | ModNoRepeat;
+
 
         var virtualKey = ConvertKey(key);
 
@@ -120,7 +122,7 @@ public sealed class WindowsGlobalHotkeyService
         return 0;
     }
 
-    public bool CheckPlatformAndShortcut(Key key,    KeyModifiers modifiers)
+    public bool CheckPlatformAndShortcut(Key key, KeyModifiers modifiers)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -213,7 +215,7 @@ public sealed class WindowsGlobalHotkeyService
         return true;
     }
 
-    private IntPtr WindowMessageHandler(IntPtr windowHandle,uint message, IntPtr wParam,IntPtr lParam) 
+    private IntPtr WindowMessageHandler(IntPtr windowHandle, uint message, IntPtr wParam, IntPtr lParam)
     {
         if (message == WmHotkey &&
             wParam.ToInt32() == HotkeyId)
