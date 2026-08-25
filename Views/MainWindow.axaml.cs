@@ -35,12 +35,16 @@ public partial class MainWindow : Window
     // This service is used to manage clipboard operations, such as saving and restoring text.
     private readonly ClipboardService _clipboardService = new();
 
+
+    // This service is used to manage application startup behavior, such as enabling or disabling startup with Windows.
+    private readonly StartupService _startupService = new();
+
     public MainWindow()
     {
         InitializeComponent();
         LoadSettings();
-        _globalHotkeyService.HotkeyPressed +=GlobalHotkeyService_HotkeyPressed;
-      
+        _globalHotkeyService.HotkeyPressed += GlobalHotkeyService_HotkeyPressed;
+
 
         Closing += MainWindow_Closing;
     }
@@ -68,7 +72,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        var convertedText = _layoutConverter.Convert(selectedText, _firstLanguage,_secondLanguage);
+        var convertedText = _layoutConverter.Convert(selectedText, _firstLanguage, _secondLanguage);
         Debug.WriteLine($"Original text: {selectedText}");
         Debug.WriteLine($"Converted text: {convertedText}");
 
@@ -88,8 +92,8 @@ public partial class MainWindow : Window
     }
     private async void StartButton_Click(object? sender, RoutedEventArgs e)
     {
-        var firstLanguage =(FirstLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
-       
+        var firstLanguage = (FirstLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+
 
         var secondLanguage =
             (SecondLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
@@ -147,6 +151,14 @@ public partial class MainWindow : Window
         Debug.WriteLine(
             $"Global hotkey registered successfully: {isRegistered}");
 
+        if (!isRegistered)
+        {
+            Debug.WriteLine(
+                "Settings were not saved because hotkey registration failed.");
+
+            return;
+        }
+
         var settings = new AppSettings
         {
             FirstLanguage = _firstLanguage,
@@ -158,6 +170,15 @@ public partial class MainWindow : Window
         await _settingsService.SaveAsync(settings);
 
         Debug.WriteLine("Settings saved successfully.");
+        Hide();
+
+        var startupEnabled = _startupService.Enable();
+
+        Debug.WriteLine(
+            $"Start with Windows enabled: {startupEnabled}");
+
+        Debug.WriteLine(
+            "Maqloub is now running in the background.");
 
     }
     // This event handler is triggered when the user presses a key in the ShortcutTextBox.
@@ -191,12 +212,12 @@ public partial class MainWindow : Window
 
         e.Handled = true;
 
-     
+
     }
 
 
     // This event handler is triggered when the user attempts to close the window.
-    private void MainWindow_Closing(object? sender,WindowClosingEventArgs e)
+    private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
         if (_allowClose)
             return;
@@ -250,6 +271,10 @@ public partial class MainWindow : Window
         _firstLanguage = _savedSettings.FirstLanguage;
         _secondLanguage = _savedSettings.SecondLanguage;
 
+
+        SelectComboBoxItem(FirstLanguageComboBox,_firstLanguage);
+        SelectComboBoxItem(SecondLanguageComboBox,_secondLanguage);
+
         if (Enum.TryParse<Key>(
                 _savedSettings.ShortcutKey,
                 out var key))
@@ -262,6 +287,13 @@ public partial class MainWindow : Window
                 out var modifiers))
         {
             _selectedShortcutModifiers = modifiers;
+        }
+
+        if (_selectedShortcutKey is not null &&
+    _selectedShortcutModifiers != KeyModifiers.None)
+        {
+            ShortcutTextBox.Text =
+                $"{_selectedShortcutModifiers} + {_selectedShortcutKey}";
         }
 
         Debug.WriteLine("Saved settings applied.");
@@ -281,7 +313,7 @@ public partial class MainWindow : Window
         }
 
 
-        
+
         var platformHandle = TryGetPlatformHandle();
 
         if (platformHandle is null)
@@ -336,7 +368,7 @@ public partial class MainWindow : Window
     }
 
 
-  
+
     // This 
     private bool RegisterCurrentShortcut()
     {
@@ -355,6 +387,24 @@ public partial class MainWindow : Window
             platformHandle.Handle,
             _selectedShortcutKey!.Value,
             _selectedShortcutModifiers);
+    }
+
+
+
+    private static void SelectComboBoxItem(ComboBox comboBox, string savedValue)
+    {
+        foreach (var item in comboBox.Items)
+        {
+            if (item is ComboBoxItem comboBoxItem &&
+                string.Equals(
+                    comboBoxItem.Content?.ToString(),
+                    savedValue,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                comboBox.SelectedItem = comboBoxItem;
+                return;
+            }
+        }
     }
 
 }
