@@ -74,7 +74,15 @@ public partial class App : Application
         desktop.Shutdown();
     }
 
-
+    private void ResetSettings_OnClick(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime
+                is IClassicDesktopStyleApplicationLifetime desktop &&
+            desktop.MainWindow is MainWindow mainWindow)
+        {
+            mainWindow.ResetSettings();
+        }
+    }
 
     private void OpenSettings_OnClick(
     object? sender,

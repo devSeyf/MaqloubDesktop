@@ -24,9 +24,15 @@ public sealed class SettingsService
     }
 
 
+    public void Delete()
+    {
+        if (File.Exists(_filePath))
+        {
+            File.Delete(_filePath);
+        }
+    }
 
-    
-    
+
     public async Task<AppSettings?> LoadAsync()
     {
         if (!File.Exists(_filePath))

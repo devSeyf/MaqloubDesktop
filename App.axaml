@@ -5,7 +5,7 @@
              x:Class="Maqloub.App"
              xmlns:local="using:Maqloub"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator />
@@ -15,37 +15,41 @@
         <FluentTheme />
     </Application.Styles>
 
- 
+
     <TrayIcon.Icons>
-    <TrayIcons>
-        <TrayIcon
-            Icon="/Assets/kitchen-pack.png"
-            ToolTipText="مقلوب"
-            Clicked="OpenWindow_OnClick">
+        <TrayIcons>
+            <TrayIcon
+                Icon="/Assets/kitchen-pack.png"
+                ToolTipText="Maqloub"
+                Clicked="OpenWindow_OnClick">
 
-            <TrayIcon.Menu>
-                <NativeMenu>
-                    <NativeMenuItem
-                        Header="Open Maqloub "
-                        Click="OpenWindow_OnClick" />
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem
+                            Header="Open Maqloub "
+                            Click="OpenWindow_OnClick" />
 
-                    <NativeMenuItem
-                        Header="Final exit"
-                        Click="ExitApplication_OnClick" />
+                        <NativeMenuItem
+                            Header="Final exit"
+                            Click="ExitApplication_OnClick" />
 
-                    <NativeMenuItem
-                    Header="Settings"
-                    Click="OpenSettings_OnClick" />
+                        <NativeMenuItem
+                            Header="Settings"
+                            Click="OpenSettings_OnClick" />
+
+                        <NativeMenuItem
+                            Header="Reset Settings"
+                            Click="ResetSettings_OnClick" />
 
 
-                </NativeMenu>
+                    </NativeMenu>
 
- 
-            </TrayIcon.Menu>
 
-        </TrayIcon>
-    </TrayIcons>
-</TrayIcon.Icons>
+                </TrayIcon.Menu>
+
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
 
 
 </Application>

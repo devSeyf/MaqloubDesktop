@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Width="420"
-        Height="600"
+        Height="700"
         Background="#121212"
         x:Class="Maqloub.Views.MainWindow"
         x:DataType="vm:MainViewModel"
@@ -114,9 +114,18 @@
 
 
 
+
+            <CheckBox
+                x:Name="StartWithWindowsCheckBox"
+                Content="Start Maqloub with Windows"
+                Foreground="White"
+                HorizontalAlignment="Center" />
+
+
+
             <Button
                 x:Name="StartButton"
-                Content="Start"
+                Content="Save &amp; Run"
                 Width="260"
                 Height="45"
                 Background="#6C63FF"
@@ -128,6 +137,17 @@
                 VerticalContentAlignment="Center"
                 Margin="0,25,0,0"
                 Click="StartButton_Click"/>
+
+            <TextBlock
+                x:Name="StatusTextBlock"
+                Text=""
+                Foreground="#79D98C"
+                FontSize="13"
+                TextAlignment="Center"
+                HorizontalAlignment="Center"
+                IsVisible="False"/>
+
+
 
 
         </StackPanel>

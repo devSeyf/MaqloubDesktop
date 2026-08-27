@@ -5,11 +5,13 @@ using System.Diagnostics;
 namespace Maqloub.Views;
 
 using Avalonia.Input.Platform;
+using Avalonia.Media;
 using Maqloub.Models;
 using Maqloub.Services;
 using System;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
+using Tmds.DBus.Protocol;
 
 public partial class MainWindow : Window
 {
@@ -90,26 +92,49 @@ public partial class MainWindow : Window
         Debug.WriteLine("Clipboard restored.");
 
     }
-    private async void StartButton_Click(object? sender, RoutedEventArgs e)
+    private async void StartButton_Click(
+       object? sender,
+       RoutedEventArgs e)
     {
-        var firstLanguage = (FirstLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+        StatusTextBlock.IsVisible = false;
 
+        var firstLanguage =
+            (FirstLanguageComboBox.SelectedItem as ComboBoxItem)
+            ?.Content?.ToString();
 
         var secondLanguage =
-            (SecondLanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            (SecondLanguageComboBox.SelectedItem as ComboBoxItem)
+            ?.Content?.ToString();
 
         if (string.IsNullOrWhiteSpace(firstLanguage) ||
-      string.IsNullOrWhiteSpace(secondLanguage))
+            string.IsNullOrWhiteSpace(secondLanguage))
         {
-            Debug.WriteLine("Please select both languages.");
+            ShowStatus(
+                "Please select both layouts.",
+                Brushes.OrangeRed);
+
+            Debug.WriteLine("Please select both layouts.");
             return;
         }
 
-
-        // The languages must be different
         if (firstLanguage == secondLanguage)
         {
-            Debug.WriteLine("Languages must be different.");
+            ShowStatus(
+                "The two layouts must be different.",
+                Brushes.OrangeRed);
+
+            Debug.WriteLine("The two layouts must be different.");
+            return;
+        }
+
+        if (_selectedShortcutKey is null ||
+            _selectedShortcutModifiers == KeyModifiers.None)
+        {
+            ShowStatus(
+                "Please choose a valid shortcut.",
+                Brushes.OrangeRed);
+
+            Debug.WriteLine("Please choose a valid shortcut.");
             return;
         }
 
@@ -117,34 +142,10 @@ public partial class MainWindow : Window
         _secondLanguage = secondLanguage;
 
         Debug.WriteLine(
-            $"Saved languages: {_firstLanguage} <-> {_secondLanguage}");
-
-
-
-
-        if (_selectedShortcutKey is null ||
-    _selectedShortcutModifiers == KeyModifiers.None)
-        {
-            Debug.WriteLine("Please select a valid shortcut.");
-            return;
-        }
+            $"Saved layouts: {_firstLanguage} <-> {_secondLanguage}");
 
         Debug.WriteLine(
             $"Shortcut ready: {_selectedShortcutModifiers} + {_selectedShortcutKey}");
-
-
-
-        var platformHandle = TryGetPlatformHandle();
-
-        if (platformHandle is null ||
-            platformHandle.Handle == IntPtr.Zero)
-        {
-            Debug.WriteLine("Could not get the native window handle.");
-            return;
-        }
-
-        Debug.WriteLine(
-            $"Native handle type: {platformHandle.HandleDescriptor}");
 
         var isRegistered = RegisterCurrentShortcut();
 
@@ -153,33 +154,49 @@ public partial class MainWindow : Window
 
         if (!isRegistered)
         {
+            ShowStatus(
+                "This shortcut is unavailable. Choose another one.",
+                Brushes.OrangeRed);
+
             Debug.WriteLine(
                 "Settings were not saved because hotkey registration failed.");
 
             return;
         }
 
+        var startWithWindows =
+            StartWithWindowsCheckBox.IsChecked == true;
+
+        var startupUpdated = startWithWindows
+            ? _startupService.Enable()
+            : _startupService.Disable();
+
+        Debug.WriteLine(
+            $"Windows startup updated: {startupUpdated}");
+
         var settings = new AppSettings
         {
             FirstLanguage = _firstLanguage,
             SecondLanguage = _secondLanguage,
             ShortcutKey = _selectedShortcutKey.Value.ToString(),
-            ShortcutModifiers = _selectedShortcutModifiers.ToString()
+            ShortcutModifiers = _selectedShortcutModifiers.ToString(),
+            StartWithWindows = startWithWindows
         };
 
         await _settingsService.SaveAsync(settings);
 
         Debug.WriteLine("Settings saved successfully.");
-        Hide();
 
-        var startupEnabled = _startupService.Enable();
-
-        Debug.WriteLine(
-            $"Start with Windows enabled: {startupEnabled}");
+        ShowStatus(
+            "Saved. Maqloub is running in the background.",
+            Brushes.LightGreen);
 
         Debug.WriteLine(
             "Maqloub is now running in the background.");
 
+        await Task.Delay(900);
+
+        Hide();
     }
     // This event handler is triggered when the user presses a key in the ShortcutTextBox.
     private void ShortcutTextBox_KeyDown(object? sender, KeyEventArgs e)
@@ -272,8 +289,8 @@ public partial class MainWindow : Window
         _secondLanguage = _savedSettings.SecondLanguage;
 
 
-        SelectComboBoxItem(FirstLanguageComboBox,_firstLanguage);
-        SelectComboBoxItem(SecondLanguageComboBox,_secondLanguage);
+        SelectComboBoxItem(FirstLanguageComboBox, _firstLanguage);
+        SelectComboBoxItem(SecondLanguageComboBox, _secondLanguage);
 
         if (Enum.TryParse<Key>(
                 _savedSettings.ShortcutKey,
@@ -296,7 +313,13 @@ public partial class MainWindow : Window
                 $"{_selectedShortcutModifiers} + {_selectedShortcutKey}";
         }
 
+        StartWithWindowsCheckBox.IsChecked =
+    _savedSettings.StartWithWindows;
+
         Debug.WriteLine("Saved settings applied.");
+
+
+
     }
 
 
@@ -369,7 +392,7 @@ public partial class MainWindow : Window
 
 
 
-    // This 
+    
     private bool RegisterCurrentShortcut()
     {
         var platformHandle = TryGetPlatformHandle();
@@ -405,6 +428,54 @@ public partial class MainWindow : Window
                 return;
             }
         }
+    }
+
+
+
+
+
+
+    private void ShowStatus(string message, IBrush color)
+    {
+        StatusTextBlock.Text = message;
+        StatusTextBlock.Foreground = color;
+        StatusTextBlock.IsVisible = true;
+
+    }
+
+
+
+
+
+
+
+
+
+    public void ResetSettings()
+    {
+        _globalHotkeyService.Unregister();
+        _startupService.Disable();
+        _settingsService.Delete();
+
+        _savedSettings = null;
+
+        _firstLanguage = string.Empty;
+        _secondLanguage = string.Empty;
+
+        _selectedShortcutKey = null;
+        _selectedShortcutModifiers = KeyModifiers.None;
+
+        FirstLanguageComboBox.SelectedItem = null;
+        SecondLanguageComboBox.SelectedItem = null;
+
+        ShortcutTextBox.Text = string.Empty;
+        StartWithWindowsCheckBox.IsChecked = false;
+        StatusTextBlock.IsVisible = false;
+
+        Show();
+        Activate();
+
+        Debug.WriteLine("Settings reset successfully.");
     }
 
 }
