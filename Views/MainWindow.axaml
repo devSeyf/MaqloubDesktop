@@ -5,155 +5,164 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Width="420"
-        Height="700"
+        Height="660"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
         Background="#121212"
         x:Class="Maqloub.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="Maqloub">
 
-
     <Design.DataContext>
         <vm:MainViewModel/>
     </Design.DataContext>
 
+    <Grid Margin="24">
 
-    <Border
-        Background="#1E1E1E"
-        CornerRadius="24"
-        Padding="35"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center">
+        <Border
+            Width="340"
+            Background="#1E1E1E"
+            CornerRadius="24"
+            Padding="30"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
 
+            <StackPanel Spacing="24">
 
-        <StackPanel Width="300" Spacing="18">
+                <StackPanel Spacing="6">
 
+                    <TextBlock
+                        Text="Maqloub"
+                        FontSize="34"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        HorizontalAlignment="Center"/>
 
-            <TextBlock
-                Text="Maqloub"
-                FontSize="36"
-                FontWeight="Bold"
-                Foreground="White"
-                HorizontalAlignment="Center"/>
+                    <TextBlock
+                        Text="Flip wrong keyboard typing instantly"
+                        FontSize="14"
+                        Foreground="#AFAFAF"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"/>
 
+                </StackPanel>
 
-            <TextBlock
-                Text="Flip wrong keyboard typing instantly"
-                FontSize="15"
-                Foreground="#BBBBBB"
-                HorizontalAlignment="Center"
-                TextAlignment="Center"/>
+                <StackPanel Spacing="8">
 
+                    <TextBlock
+                        Text="First keyboard layout"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="#E5E5E5"/>
 
+                    <ComboBox
+                        x:Name="FirstLanguageComboBox"
+                        Height="42"
+                        HorizontalAlignment="Stretch"
+                        Background="#292929"
+                        Foreground="White"
+                        BorderBrush="#454545"
+                        BorderThickness="1"
+                        FontSize="14"
+                        PlaceholderText="Select first layout">
 
-            <TextBlock
-                Text="Select first layout"
-                FontSize="15"
-                Foreground="White"
-                HorizontalAlignment="Center"
-                Margin="0,20,0,0"/>
+                        <ComboBoxItem Content="Arabic"/>
+                        <ComboBoxItem Content="English"/>
 
+                    </ComboBox>
 
-            <ComboBox
-                x:Name="FirstLanguageComboBox"
-                Width="260"
-                Height="40"
-                Background="#252525"
-                Foreground="White"
-                FontSize="14">
+                </StackPanel>
 
-                <ComboBoxItem Content="Arabic"/>
-                <ComboBoxItem Content="English"/>
+                <StackPanel Spacing="8">
 
-            </ComboBox>
+                    <TextBlock
+                        Text="Second keyboard layout"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="#E5E5E5"/>
 
+                    <ComboBox
+                        x:Name="SecondLanguageComboBox"
+                        Height="42"
+                        HorizontalAlignment="Stretch"
+                        Background="#292929"
+                        Foreground="White"
+                        BorderBrush="#454545"
+                        BorderThickness="1"
+                        FontSize="14"
+                        PlaceholderText="Select second layout">
 
+                        <ComboBoxItem Content="Arabic"/>
+                        <ComboBoxItem Content="English"/>
 
-            <TextBlock
-                Text="Select second layout"
-                FontSize="15"
-                Foreground="White"
-                HorizontalAlignment="Center"
-                Margin="0,10,0,0"/>
+                    </ComboBox>
 
+                </StackPanel>
 
-            <ComboBox
-                x:Name="SecondLanguageComboBox"
-                Width="260"
-                Height="40"
-                Background="#252525"
-                Foreground="White"
-                FontSize="14">
+                <StackPanel Spacing="8">
 
-                <ComboBoxItem Content="Arabic"/>
-                <ComboBoxItem Content="English"/>
+                    <TextBlock
+                        Text="Keyboard shortcut"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="#E5E5E5"/>
 
-            </ComboBox>
+                    <TextBox
+                        x:Name="ShortcutTextBox"
+                        Height="42"
+                        HorizontalAlignment="Stretch"
+                        Background="#292929"
+                        Foreground="White"
+                        BorderBrush="#454545"
+                        BorderThickness="1"
+                        FontSize="14"
+                        IsReadOnly="True"
+                        PlaceholderText="Press Ctrl, Alt or Shift with a key"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        KeyDown="ShortcutTextBox_KeyDown"/>
 
+                </StackPanel>
 
+                <CheckBox
+                    x:Name="StartWithWindowsCheckBox"
+                    Content="Start Maqloub with Windows"
+                    Foreground="#E5E5E5"
+                    FontSize="14"
+                    HorizontalAlignment="Left"/>
 
-            <TextBlock
-                Text="Choose text flip shortcut"
-                FontSize="15"
-                Foreground="White"
-                HorizontalAlignment="Center"
-                Margin="0,10,0,0"/>
+                <StackPanel Spacing="12">
 
+                    <Button
+                        x:Name="StartButton"
+                        Content="Save &amp; Run"
+                        Height="46"
+                        HorizontalAlignment="Stretch"
+                        Background="#6C63FF"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Click="StartButton_Click"/>
 
+                    <TextBlock
+                        x:Name="StatusTextBlock"
+                        Text=""
+                        Foreground="#79D98C"
+                        FontSize="13"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Stretch"
+                        IsVisible="False"/>
 
-            <TextBox
-                x:Name="ShortcutTextBox"
-                Width="260"
-                Height="40"
-                Background="#252525"
-                Foreground="White"
-                FontSize="14"
-                IsReadOnly="True"
-                PlaceholderText="Press keys to set shortcut"
-                HorizontalContentAlignment="Center"
-                KeyDown="ShortcutTextBox_KeyDown"/>
+                </StackPanel>
 
+            </StackPanel>
 
+        </Border>
 
-
-            <CheckBox
-                x:Name="StartWithWindowsCheckBox"
-                Content="Start Maqloub with Windows"
-                Foreground="White"
-                HorizontalAlignment="Center" />
-
-
-
-            <Button
-                x:Name="StartButton"
-                Content="Save &amp; Run"
-                Width="260"
-                Height="45"
-                Background="#6C63FF"
-                Foreground="White"
-                FontSize="16"
-                FontWeight="Bold"
-                HorizontalAlignment="Center"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                Margin="0,25,0,0"
-                Click="StartButton_Click"/>
-
-            <TextBlock
-                x:Name="StatusTextBlock"
-                Text=""
-                Foreground="#79D98C"
-                FontSize="13"
-                TextAlignment="Center"
-                HorizontalAlignment="Center"
-                IsVisible="False"/>
-
-
-
-
-        </StackPanel>
-
-
-    </Border>
-
+    </Grid>
 
 </Window>
