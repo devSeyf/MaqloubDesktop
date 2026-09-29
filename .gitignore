@@ -1,5 +1,25 @@
+# Build and publish output
+[Bb]in/
+[Oo]bj/
+artifacts/
+
+# Visual Studio and user-specific settings
 .vs/
-bin/
-obj/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider local settings
+.idea/
+*.sln.iml
+*.DotSettings.user
+
+# Test and coverage output
+TestResults/
+coverage/
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
