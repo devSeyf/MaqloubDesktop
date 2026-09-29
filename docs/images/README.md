@@ -1,20 +1,28 @@
 # Maqloub screenshots
 
-This directory documents where real screenshots should be added. No screenshot files have been created yet.
+These PNG files are real, unedited window captures of the installed Maqloub application on Windows, taken on 2026-09-29. They are not generated images or UI mockups. The installed executable's exact source revision was not verified.
 
-| File to add | What it should show |
+| File | Contents |
 | --- | --- |
-| `main-window.png` | The running Maqloub settings window with Arabic and English selected and a valid shortcut. |
-| `tray-menu.png` | Maqloub's actual Windows tray menu. |
-| `conversion-example.png` | A real before-and-after conversion in an editable text field, for example `sghl` → **سلام**. |
+| [main-window.png](main-window.png) | Main window before choosing layouts or a shortcut. |
+| [configured-window.png](configured-window.png) | Arabic and English selected, with Ctrl + Alt + M entered. |
+
+The configuration capture was taken before clicking **Save & Run**. It demonstrates the controls, not successful shortcut registration or an end-to-end conversion test. Windows startup was left unchecked.
+
+## Future captures
+
+The following image files have not been added:
+
+- `tray-menu.png`: Maqloub's Windows tray menu.
+- `conversion-example.png`: an actual before-and-after conversion in an editable text field.
 
 ## Capture guidelines
 
 1. Capture the actual application; do not use mockups or generated UI images.
-2. Use readable PNG captures and crop out unrelated desktop content.
+2. Use readable PNG captures and exclude unrelated desktop content.
 3. Use sample text and remove personal information from the capture.
-4. Keep the application name **Maqloub** and the repository name **MaqloubDesktop** unchanged.
-5. Add each image only when it is available, then replace its placeholder row in the root README with an image and a descriptive caption.
-6. Check the final rendering on GitHub and use paths relative to the root README, such as `docs/images/main-window.png`.
+4. Keep the application name **Maqloub** and repository name **MaqloubDesktop** unchanged.
+5. Add an image before embedding its relative path in the root README.
+6. Check the final rendering on GitHub.
 
 The existing files in `Assets/` are application artwork, not product screenshots. Keep those assets in place.
