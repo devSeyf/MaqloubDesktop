@@ -92,17 +92,13 @@ Settings are stored at `%APPDATA%\Maqloub\settings.json`.
 
 ## Screenshots
 
-Application screenshots have not yet been added. The icon at the top is an existing repository asset, not a screenshot.
+Real captures of the installed Maqloub application on Windows.
 
-The following paths are reserved for future captures; **these image files do not exist yet**:
-
-| Planned capture | Intended path |
+| Main window | Example configuration |
 | --- | --- |
-| Main settings window | `docs/images/main-window.png` |
-| System tray menu | `docs/images/tray-menu.png` |
-| Conversion before and after | `docs/images/conversion-example.png` |
+| <img src="docs/images/main-window.png" alt="Maqloub main window before choosing layouts or a shortcut" width="320"> | <img src="docs/images/configured-window.png" alt="Maqloub with Arabic and English selected and Ctrl + Alt + M entered" width="320"> |
 
-See the [screenshot guide](docs/images/README.md) before adding real captures. No missing images are embedded in this README.
+The example shows the settings before clicking **Save & Run**. See the [screenshot guide](docs/images/README.md) for capture details and future image locations.
 
 ## Current support
 
@@ -129,7 +125,7 @@ MaqloubDesktop/
 ├── Services/            # Conversion, clipboard, hotkeys, settings, and startup
 ├── ViewModels/          # View-model infrastructure
 ├── Views/               # Main window markup and interaction logic
-├── docs/images/         # Screenshot guide and intended capture locations
+├── docs/images/         # Real screenshots and capture guide
 ├── App.axaml            # Application styling and tray menu
 ├── App.axaml.cs         # Application lifetime and tray actions
 ├── Program.cs           # Desktop entry point
@@ -141,7 +137,8 @@ MaqloubDesktop/
 
 Proposed next steps for future development; these are not shipped features or release commitments.
 
-- [ ] Add real screenshots and a short conversion demonstration.
+- [x] Add real screenshots of the main window and example configuration.
+- [ ] Add a short conversion demonstration.
 - [ ] Provide a packaged Windows release with clear installation instructions.
 - [ ] Add automated coverage for conversion mappings and mixed-text edge cases.
 - [ ] Improve copy/paste failure handling and clipboard preservation.
