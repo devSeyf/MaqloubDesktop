@@ -92,13 +92,29 @@ Settings are stored at `%APPDATA%\Maqloub\settings.json`.
 
 ## Screenshots
 
-Real captures of the installed Maqloub application on Windows.
+### Main window and settings
 
-| Main window | Example configuration |
+| Main window | Configured layouts and shortcut |
 | --- | --- |
-| <img src="docs/images/main-window.png" alt="Maqloub main window before choosing layouts or a shortcut" width="320"> | <img src="docs/images/configured-window.png" alt="Maqloub with Arabic and English selected and Ctrl + Alt + M entered" width="320"> |
+| <img src="docs/images/main-window.png" alt="Maqloub main window before choosing layouts or a shortcut" width="360"> | <img src="docs/images/configured-window.png" alt="Maqloub with Arabic and English selected, Ctrl + Alt + M entered, and Windows startup checked" width="360"> |
 
-The example shows the settings before clicking **Save & Run**. See the [screenshot guide](docs/images/README.md) for capture details and future image locations.
+### System tray
+
+Maqloub's spatula icon appears in the Windows system tray.
+
+![Maqloub icon in the Windows system tray](docs/images/system-tray.png)
+
+### Before and after
+
+An example of correcting text typed with the wrong keyboard layout.
+
+**Before correction**
+
+![Text typed with the wrong keyboard layout in a browser search field](docs/images/conversion-before.png)
+
+**After correction**
+
+![Corrected Arabic text in the browser search field](docs/images/conversion-after.png)
 
 ## Current support
 
@@ -138,7 +154,7 @@ MaqloubDesktop/
 Proposed next steps for future development; these are not shipped features or release commitments.
 
 - [x] Add real screenshots of the main window and example configuration.
-- [ ] Add a short conversion demonstration.
+- [x] Show a before-and-after conversion example.
 - [ ] Provide a packaged Windows release with clear installation instructions.
 - [ ] Add automated coverage for conversion mappings and mixed-text edge cases.
 - [ ] Improve copy/paste failure handling and clipboard preservation.
